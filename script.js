@@ -3,13 +3,12 @@
 // -------------------------------
 const products = [
     {
-        name: "Camiseta Compresión BreatheDivinity – Negra",
-        price: 39.99,
-        description: "Compresión profesional, tejido de secado rápido, ajuste anatómico y alta elasticidad para entrenamientos fuertes.",
+        name: "Camiseta Compresión BreatheDivinity ",
+        price: 39.99€,
+        description: "Fabricadas con materiales de alto rendimiento, estas camisetas de compresión de BreatheDivinity se ajustan al cuerpo como una segunda piel, acompañando cada movimiento y ofreciendo soporte donde más lo necesitas. La compresión estratégica ayuda a mejorar la circulación permitiéndote rendir al máximo en cualquier entrenamiento o competición..",
         sizes: ["S", "M", "L", "XL"],
         colors: [
             {name:"Negro", code:"#000", img:"img/prod1_black.jpg"},
-            {name:"Gris", code:"#666", img:"img/prod1_grey.jpg"},
             {name:"Blanco", code:"#fff", img:"img/prod1_white.jpg"}
         ],
         gallery: [
@@ -19,8 +18,8 @@ const products = [
         ]
     },
     {
-        name: "Compresión Onyx – Gymshark",
-        price: 44.99,
+        name: "Gymshark Onyx Compression shirt",
+        price: 44.99€,
         description: "Compresión intensa, diseño Onyx, realza la forma del torso y mejora el rendimiento muscular.",
         sizes: ["S", "M", "L", "XL"],
         colors: [
@@ -34,7 +33,7 @@ const products = [
     },
     {
         name: "Tank Top BreatheDivinity – Negro",
-        price: 29.99,
+        price: 29.99€,
         description: "Ligero, fresco, ideal para entrenamientos de espalda y pecho. Corte atlético.",
         sizes: ["S","M","L"],
         colors: [
