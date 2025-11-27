@@ -42,58 +42,100 @@ const products = [
 // -------------------------------
 const container = document.getElementById("productContainer");
 
-products.forEach((p, index)=>{
+products.forEach((p, index) => {
     const card = document.createElement("div");
     card.className = "product-card";
 
-    // Galería principal
-    let thumbGallery = '';
-    if(index === 0){
-        // Primera camiseta: 3 fotos principales
-        thumbGallery = p.gallery.map(g=>`<img src="${g}" onclick="openModal('${g}')">`).join("");
-    } else {
-        thumbGallery = `<img src="${p.gallery[0]}" onclick="openModal('${p.gallery[0]}')">`;
-    }
+    // Left side
+    const leftDiv = document.createElement("div");
+    leftDiv.className = "product-left";
 
-    // Colores y mini-galerías
-    let colorSelector = '';
-    p.colors.forEach(c=>{
-        colorSelector += `
-        <div class="color" title="${c.name}" style="background:${c.code}" onclick="
-            document.getElementById('main${index}').src='${c.img}';
-            ${c.gallery ? `document.getElementById('thumbRow${index}').innerHTML='${c.gallery.map(g=>`<img src=${g} onclick=openModal(\\'${g}\\')>`).join("")}'` : ''}
-        "></div>`;
+    const thumbRow = document.createElement("div");
+    thumbRow.className = "thumb-row";
+    thumbRow.id = `thumbRow${index}`;
+
+    const mainImg = document.createElement("img");
+    mainImg.id = `main${index}`;
+    mainImg.src = p.gallery[0];
+    mainImg.addEventListener("click", () => openModal(p.gallery[0]));
+
+    // Mini-galería inicial
+    p.gallery.forEach(imgSrc => {
+        const thumb = document.createElement("img");
+        thumb.src = imgSrc;
+        thumb.addEventListener("click", () => openModal(imgSrc));
+        thumbRow.appendChild(thumb);
     });
 
-    card.innerHTML = `
-        <div class="product-left">
-            <div id="thumbRow${index}" class="thumb-row">
-                ${thumbGallery}
-            </div>
-            <img id="main${index}" src="${p.gallery[0]}" onclick="openModal('${p.gallery[0]}')">
-        </div>
+    leftDiv.appendChild(thumbRow);
+    leftDiv.appendChild(mainImg);
 
-        <div class="product-right">
-            <h2>${p.name}</h2>
-            <p>${p.description}</p>
-            <div class="price">${p.price} €</div>
+    // Right side
+    const rightDiv = document.createElement("div");
+    rightDiv.className = "product-right";
 
-            <label>Talla:</label><br>
-            <select id="size${index}">
-                ${p.sizes.map(s=>`<option>${s}</option>`).join("")}
-            </select>
+    const title = document.createElement("h2");
+    title.textContent = p.name;
 
-            <p>Color:</p>
-            <div class="color-selector">${colorSelector}</div>
+    const desc = document.createElement("p");
+    desc.textContent = p.description;
 
-            <button class="btn" onclick="addToCart(${index})">Añadir al carrito</button>
-        </div>
-    `;
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent = `${p.price} €`;
+
+    const sizeLabel = document.createElement("label");
+    sizeLabel.textContent = "Talla:";
+
+    const sizeSelect = document.createElement("select");
+    sizeSelect.id = `size${index}`;
+    p.sizes.forEach(s => {
+        const option = document.createElement("option");
+        option.textContent = s;
+        sizeSelect.appendChild(option);
+    });
+
+    const colorLabel = document.createElement("p");
+    colorLabel.textContent = "Color:";
+
+    const colorDiv = document.createElement("div");
+    colorDiv.className = "color-selector";
+
+    p.colors.forEach(c => {
+        const colorBtn = document.createElement("div");
+        colorBtn.className = "color";
+        colorBtn.title = c.name;
+        colorBtn.style.background = c.code;
+
+        colorBtn.addEventListener("click", () => {
+            mainImg.src = c.img;
+            if(c.gallery){
+                thumbRow.innerHTML = "";
+                c.gallery.forEach(g => {
+                    const thumb = document.createElement("img");
+                    thumb.src = g;
+                    thumb.addEventListener("click", () => openModal(g));
+                    thumbRow.appendChild(thumb);
+                });
+            }
+        });
+
+        colorDiv.appendChild(colorBtn);
+    });
+
+    const addBtn = document.createElement("button");
+    addBtn.className = "btn";
+    addBtn.textContent = "Añadir al carrito";
+    addBtn.addEventListener("click", () => addToCart(index));
+
+    rightDiv.append(title, desc, price, sizeLabel, sizeSelect, colorLabel, colorDiv, addBtn);
+
+    card.append(leftDiv, rightDiv);
     container.appendChild(card);
 });
 
 // -------------------------------
-// MODAL DE IMÁGENES
+// MODAL
 // -------------------------------
 function openModal(src){
     const modal = document.getElementById("modalBg");
@@ -105,7 +147,7 @@ function closeModal(){
 }
 
 // -------------------------------
-// CARRITO POPUP
+// CARRITO
 // -------------------------------
 let cart = [];
 
@@ -124,7 +166,9 @@ function updateCartPopup(){
         <div class="cart-item">
             ${p.name} — ${p.price} €
         </div>
-    `).join("") + `<div class="cart-total" style="margin-top:10px; font-weight:bold;">Total: ${total} €</div>`;
+    `).join("") + `<div class="cart-total">Total: ${total} €</div>`;
+
+    document.getElementById("cartBtn").textContent = `🛒 Carrito (${cart.length})`;
 
     cartPage.style.display = "block";
 }
@@ -132,137 +176,7 @@ function updateCartPopup(){
 function closeCart(){
     document.getElementById("cartPage").style.display = "none";
 }
-// -------------------------------
-// LISTA DE PRODUCTOS
-// -------------------------------
-const products = [
-    {
-        name: "Camiseta Compresión BreatheDivinity",
-        price: 39.99,
-        description: "Fabricadas con materiales de alto rendimiento, estas camisetas de compresión de BreatheDivinity se ajustan al cuerpo como una segunda piel, acompañando cada movimiento y ofreciendo soporte donde más lo necesitas. La compresión estratégica ayuda a mejorar la circulación permitiéndote rendir al máximo en cualquier entrenamiento o competición.",
-        sizes: ["S", "M", "L", "XL"],
-        colors: [
-            {name:"Negro", code:"#000", img:"img/prod1_black_1.jpg", gallery:["img/prod1_black_1.jpg","img/prod1_black_2.jpg"]},
-            {name:"Blanco", code:"#fff", img:"img/prod1_white_1.jpg", gallery:["img/prod1_white_1.jpg","img/prod1_white_2.jpg"]}
-        ],
-        gallery: ["img/prod1_1.jpg","img/prod1_2.jpg","img/prod1_3.jpg"]
-    },
-    {
-        name: "Gymshark Onyx Compression shirt",
-        price: 44.99,
-        description: "Compresión intensa, diseño Onyx, realza la forma del torso y mejora el rendimiento muscular.",
-        sizes: ["S", "M", "L", "XL"],
-        colors: [
-            {name:"Negro Mate", code:"#111", img:"img/onyx_black.jpg"},
-            {name:"Azul Noche", code:"#002244", img:"img/onyx_blue.jpg"}
-        ],
-        gallery: ["img/onyx_1.jpg","img/onyx_2.jpg"]
-    },
-    {
-        name: "Tank Top BreatheDivinity – Negro",
-        price: 29.99,
-        description: "Ligero, fresco, ideal para entrenamientos de espalda y pecho. Corte atlético.",
-        sizes: ["S","M","L"],
-        colors: [
-            {name:"Negro", code:"#000", img:"img/tank_black.jpg"},
-            {name:"Rojo", code:"#c00", img:"img/tank_red.jpg"}
-        ],
-        gallery: ["img/tank_1.jpg","img/tank_2.jpg"]
-    }
-];
 
-// -------------------------------
-// RENDER DE PRODUCTOS
-// -------------------------------
-const container = document.getElementById("productContainer");
-
-products.forEach((p, index)=>{
-    const card = document.createElement("div");
-    card.className = "product-card";
-
-    // Galería principal
-    let thumbGallery = '';
-    if(index === 0){
-        // Primera camiseta: 3 fotos principales
-        thumbGallery = p.gallery.map(g=>`<img src="${g}" onclick="openModal('${g}')">`).join("");
-    } else {
-        thumbGallery = `<img src="${p.gallery[0]}" onclick="openModal('${p.gallery[0]}')">`;
-    }
-
-    // Colores y mini-galerías
-    let colorSelector = '';
-    p.colors.forEach(c=>{
-        colorSelector += `
-        <div class="color" title="${c.name}" style="background:${c.code}" onclick="
-            document.getElementById('main${index}').src='${c.img}';
-            ${c.gallery ? `document.getElementById('thumbRow${index}').innerHTML='${c.gallery.map(g=>`<img src=${g} onclick=openModal(\\'${g}\\')>`).join("")}'` : ''}
-        "></div>`;
-    });
-
-    card.innerHTML = `
-        <div class="product-left">
-            <div id="thumbRow${index}" class="thumb-row">
-                ${thumbGallery}
-            </div>
-            <img id="main${index}" src="${p.gallery[0]}" onclick="openModal('${p.gallery[0]}')">
-        </div>
-
-        <div class="product-right">
-            <h2>${p.name}</h2>
-            <p>${p.description}</p>
-            <div class="price">${p.price} €</div>
-
-            <label>Talla:</label><br>
-            <select id="size${index}">
-                ${p.sizes.map(s=>`<option>${s}</option>`).join("")}
-            </select>
-
-            <p>Color:</p>
-            <div class="color-selector">${colorSelector}</div>
-
-            <button class="btn" onclick="addToCart(${index})">Añadir al carrito</button>
-        </div>
-    `;
-    container.appendChild(card);
-});
-
-// -------------------------------
-// MODAL DE IMÁGENES
-// -------------------------------
-function openModal(src){
-    const modal = document.getElementById("modalBg");
-    document.getElementById("modalImg").src = src;
-    modal.style.display = "flex";
-}
-function closeModal(){ 
-    document.getElementById("modalBg").style.display = "none"; 
-}
-
-// -------------------------------
-// CARRITO POPUP
-// -------------------------------
-let cart = [];
-
-function addToCart(i){
-    cart.push(products[i]);
-    updateCartPopup();
-}
-
-function updateCartPopup(){
-    const cartPage = document.getElementById("cartPage");
-    const list = document.getElementById("cartItems");
-
-    let total = cart.reduce((acc,p)=> acc + p.price, 0).toFixed(2);
-
-    list.innerHTML = cart.map(p=>`
-        <div class="cart-item">
-            ${p.name} — ${p.price} €
-        </div>
-    `).join("") + `<div class="cart-total" style="margin-top:10px; font-weight:bold;">Total: ${total} €</div>`;
-
-    cartPage.style.display = "block";
-}
-
-function closeCart(){
-    document.getElementById("cartPage").style.display = "none";
+function openCart(){
+    document.getElementById("cartPage").style.display = "block";
 }
