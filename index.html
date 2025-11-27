@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IronFit Lab | Tienda</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header>
+    <h1>IRONFIT LAB</h1>
+    <div id="cartBtn" onclick="openCart()">🛒 Carrito (0)</div>
+</header>
+
+<main id="productContainer">
+    <!-- JS insertará los productos aquí -->
+</main>
+
+<!-- MODAL IMÁGENES -->
+<div class="modal-bg" id="modalBg" onclick="closeModal()">
+    <img id="modalImg">
+</div>
+
+<!-- CARRITO -->
+<div id="cartPage">
+    <h2>Tu Carrito</h2>
+    <div id="cartItems"></div>
+    <button onclick="closeCart()" class="btn-back">Volver</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
