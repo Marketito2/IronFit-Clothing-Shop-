@@ -123,6 +123,7 @@ select {
     max-width: 90%;
     max-height: 90%;
     border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
 /* CARRITO */
@@ -135,6 +136,11 @@ select {
 .cart-item {
     padding: 15px 0;
     border-bottom: 1px solid #ddd;
+}
+
+.cart-total {
+    margin-top: 10px;
+    font-weight: bold;
 }
 
 .btn-back {
