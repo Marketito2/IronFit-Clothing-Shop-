@@ -57,12 +57,14 @@ products.forEach((p, index) => {
     const mainImg = document.createElement("img");
     mainImg.id = `main${index}`;
     mainImg.src = p.gallery[0];
+    mainImg.setAttribute("loading", "lazy");  // Lazy loading para la imagen principal
     mainImg.addEventListener("click", () => openModal(p.gallery[0]));
 
     // Mini-galería inicial
     p.gallery.forEach(imgSrc => {
         const thumb = document.createElement("img");
         thumb.src = imgSrc;
+        thumb.setAttribute("loading", "lazy");  // Lazy loading para los thumbnails
         thumb.addEventListener("click", () => openModal(imgSrc));
         thumbRow.appendChild(thumb);
     });
@@ -114,6 +116,7 @@ products.forEach((p, index) => {
                 c.gallery.forEach(g => {
                     const thumb = document.createElement("img");
                     thumb.src = g;
+                    thumb.setAttribute("loading", "lazy");  // Lazy loading para los thumbnails de colores
                     thumb.addEventListener("click", () => openModal(g));
                     thumbRow.appendChild(thumb);
                 });
@@ -154,6 +157,7 @@ let cart = [];
 function addToCart(i){
     cart.push(products[i]);
     updateCartPopup();
+    showToast(`Añadido al carrito: ${products[i].name}`);
 }
 
 function updateCartPopup(){
@@ -179,4 +183,14 @@ function closeCart(){
 
 function openCart(){
     document.getElementById("cartPage").style.display = "block";
+}
+
+// -------------------------------
+// TOAST (Feedback visual)
+function showToast(message){
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
 }
